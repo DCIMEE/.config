@@ -10,4 +10,5 @@ Files located at
 `/home/username/.config`
 
 You might want to make a copy from your current user directory to the root user directory
+
 it would be at `~/.config` when you swich to root
