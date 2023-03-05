@@ -13,6 +13,7 @@ au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g
 " interface
 syntax on
 set number
+set relativenumber
 set ruler
 set wrap
 set showcmd
