@@ -1,0 +1,9 @@
+{
+	"coc.preferences.extensionUpdateCheck": "daily",
+	"suggest.noselect": true,
+	"suggest.enablePreselect": false,
+	"codeLens.enable": true,
+	"list.previousKeymap": "<C-u>",
+	"list.nextKeymap": "<C-e>",
+	"coc.preferences.formatOnSave": true
+}
