@@ -7,7 +7,7 @@ Files located at
 
  or to say 
  
-`/home/username/.config`
+`$HOME/.config`
 
 You might want to make a copy from your current user directory to the root user directory
 
