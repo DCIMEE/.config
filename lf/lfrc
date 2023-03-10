@@ -101,7 +101,7 @@ cmd zip ${{
     rm -rf $1
 }}
 
-=== Navigation
+# === Navigation
 map u up
 map e down
 map U half-up
@@ -111,6 +111,6 @@ map <C-e> page-dwon
 map i open
 map n updir
 
-=== Open & Quit
+# === Open & Quit
 map Q quit
 
