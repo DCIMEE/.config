@@ -1,14 +1,7 @@
 # .config
-My personal config files.
 
 Files located at 
 
-`~/.config`
+`$HOME/.config`
 
- or to say 
- 
-`/home/username/.config`
-
-You might want to make a copy from your current user directory to the root user directory
-
-it would be at `~/.config` when you swich to root
+You might want to make a copy from your current user directory to the root user directory.
