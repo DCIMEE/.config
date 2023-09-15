@@ -2,7 +2,7 @@
 
 let mapleader=" "
 
-" For Plugin
+" For Plugins
 filetype on
 filetype indent on
 filetype plugin on
@@ -33,11 +33,12 @@ set tabstop=4
 set shiftwidth=4
 
 " Misc.
+set nocompatible
 set hidden
 set updatetime=100
 set shortmess+=c
 set mouse=a
-
+set autoindent
 
 
 " === Navigation ===
@@ -49,6 +50,19 @@ noremap i l
 noremap u k
 noremap U 5k
 noremap E 5j
+
+
+" N key: go to the start of the line
+noremap <silent> N 0
+" I key: go to the end of the line
+noremap <silent> I $
+
+" Faster in-line navigation
+noremap W 5w
+noremap B 5b
+
+" set h (same as n, cursor left) to 'end of word'
+noremap h e
 
 noremap = nzz
 noremap - Nzz
@@ -62,6 +76,11 @@ map s <nop>
 map S :w<CR>
 map Q :q<CR>
 
+" Copy to system clipboard
+vnoremap Y "+y
+
+" Edit init.vim
+nnoremap <LEADER>rc :e $HOME/.config/nvim/init.vim<CR>
 
 " === Split ===
 map si :set splitright<CR>:vsplit<CR>
@@ -78,6 +97,7 @@ map <LEADER>u <C-w>k
 map <LEADER>n <C-w>h
 map <LEADER>e <C-w>j
 
+
 map <up> :res -5<CR>
 map <down> :res +5<CR>
 map <left> :vertical resize +5<CR>
@@ -91,18 +111,56 @@ map ti :+tabnext<CR>
 " Misc.
 map R :source $MYVIMRC<CR>
 
-" === Plugins ===
-call plug#begin()
+" Split a terminal on the right side
+map tm :set splitright<CR>:vsplit<CR>:term<CR>
+tnoremap <Esc> <C-\><C-n><CR>
 
-Plug 'https://github.com/neoclide/coc.nvim', {'branch': 'release'}
+" Plugins
+call plug#begin('$HOME/.local/share/nvim/plugged')
 Plug 'vim-airline/vim-airline'
-
+Plug 'mg979/vim-visual-multi'
+Plug 'tpope/vim-surround' " type yskw' to wrap the word with '' or type cs'` to change 'word' to `word`
+Plug 'gcmt/wildfire.vim' " in Visual mode, type k' to select all text in '', or type k) k] k} kp
+Plug 'neoclide/coc.nvim', {'branch': 'release'}
 call plug#end()
 
 
-" === Coc.Nvim ===
-"
-let g:coc_global_extensions = ['coc-json', 'coc-vimlsp', 'coc-clangd', 'coc-texlab']
+" == vim-visual-multi ==
+let g:VM_default_mappings = 0
+let g:VM_leader                     = {'default': ',', 'visual': ',', 'buffer': ','}
+let g:VM_maps                       = {}
+let g:VM_custom_motions             = {'n': 'h', 'i': 'l', 'u': 'k', 'e': 'j', 'N': '0', 'I': '$', 'h': 'e'}
+let g:VM_maps['i']                  = 'k'
+let g:VM_maps['I']                  = 'K'
+let g:VM_maps['Find Under']         = '<C-k>'
+let g:VM_maps['Find Subword Under'] = '<C-k>'
+let g:VM_maps['Find Next']          = ''
+let g:VM_maps['Find Prev']          = ''
+let g:VM_maps['Remove Region']      = 'q'
+let g:VM_maps['Skip Region']        = '<c-n>'
+let g:VM_maps["Undo"]               = 'l'
+let g:VM_maps["Redo"]               = '<C-r>'
+
+
+" == wildfire ==
+map <c-b> <Plug>(wildfire-quick-select)
+let g:wildfire_objects = {
+    \ "*" : ["i'", 'i"', "i)", "i]", "i}", "it"],
+    \ "html,xml" : ["at", "it"],
+\ }
+
+
+
+" === coc.nvim ===
+let g:coc_global_extensions = [
+			\ 'coc-vimlsp', 
+			\ 'coc-clangd', 
+			\ 'coc-json',
+			\ 'coc-actions', 
+			\ 'coc-explorer']
+
+
+" === Coc.Nvim Configurations
 
 " Use tab for trigger completion with characters ahead and navigate
 inoremap <silent><expr> <TAB>
@@ -122,11 +180,11 @@ function! CheckBackspace() abort
 endfunction
 
 
-" Use <ctrl-o> to trigger completion
-  inoremap <silent><expr> <c-o> coc#refresh()
+" Use <c-space> to trigger completion
+inoremap <silent><expr> <c-o> coc#refresh()
 
 
-" Use `SPACE-` and `SPACE=` to navigate diagnostics
+" Use `<SPACE>-` and `<SPACE>=` to navigate diagnostics
 " Use `:CocDiagnostics` to get all diagnostics of current buffer in location list
 nmap <silent> <LEADER>- <Plug>(coc-diagnostic-prev)
 nmap <silent> <LEADER>= <Plug>(coc-diagnostic-next)
@@ -139,8 +197,8 @@ nmap <silent> gi <Plug>(coc-implementation)
 nmap <silent> gr <Plug>(coc-references)
 
 
-" Use SPACE+m to show documentation in preview window
-nnoremap <silent> <LEADER>m :call ShowDocumentation()<CR>
+" Use <LEADER>h to show documentation in preview window
+nnoremap <silent> <LEADER>h :call ShowDocumentation()<CR>
 
 function! ShowDocumentation()
   if CocAction('hasProvider', 'hover')
@@ -151,10 +209,19 @@ function! ShowDocumentation()
 endfunction
 
 
+" Highlight the symbol and its references when holding the cursor
+autocmd CursorHold * silent call CocActionAsync('highlight')
+
+
 " Symbol renaming
 nmap <leader>rn <Plug>(coc-rename)
 
-" Applying code actions to the selected code block
-" Example: `<leader>aap` for current paragraph
+" Shortcut to call coc-explorer
+nmap tt :CocCommand explorer<CR>
+
+" Remap for do codeAction of selected region
+function! s:cocActionsOpenFromSelected(type) abort
+  execute 'CocCommand actions.open ' . a:type
+endfunction
 xmap <leader>a  <Plug>(coc-codeaction-selected)
-nmap <leader>a  <Plug>(coc-codeaction-selected)
+nmap <leader>aw  <Plug>(coc-codeaction-selected)w
